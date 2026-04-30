@@ -6,18 +6,21 @@
 <title>Giverny — Nuestro Atelier</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+SC:wght@300;400;500;600&family=Italianno&display=swap" rel="stylesheet">
 <style>
   :root{
-    --agua:#7fa7c9;
+    --agua:#88b4d6;
     --agua-prof:#3d6b8a;
-    --lavanda:#b8a8d4;
-    --salvia:#a8b89a;
+    --jardin:#5a7a4a;
+    --jardin-prof:#2f4a3a;
+    --lavanda:#c5b8d8;
+    --salvia:#bcc9a8;
     --crema:#f5ecd9;
+    --crema-claro:#fbf6e8;
     --rosa:#e8b8c4;
-    --dorado:#d4a85a;
-    --tinta:#2a3f5a;
-    --niebla:rgba(245,236,217,0.85);
+    --dorado:#c69a4a;
+    --tinta:#283f3a;
+    --niebla:rgba(251,246,232,0.88);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden}
@@ -27,182 +30,156 @@
     background:#1a2535;
     -webkit-font-smoothing:antialiased;
   }
-
-  /* ============ LOGIN ============ */
+  .canvas-grain{
+    position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.18 0'/></filter><rect width='220' height='220' filter='url(%23n)' opacity='0.55'/></svg>");
+    mix-blend-mode:overlay;opacity:.35;
+  }
   #login{
     position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:#1a2535;z-index:100;transition:opacity 1.2s ease;
+    background:#1a2535;z-index:100;transition:opacity 1.4s ease;overflow:hidden;
   }
   #login.gone{opacity:0;pointer-events:none}
-  #login::before{
-    content:"";position:absolute;inset:0;
-    background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1600px-Monet_-_Impression%2C_Sunrise.jpg');
-    background-size:cover;background-position:center;
-    filter:saturate(1.05) brightness(0.92);
-    animation:burns 30s ease-in-out infinite alternate;
+  .bg-static, .bg-water{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+  }
+  #login .bg-static{
+    background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg');
+    animation:burns 35s ease-in-out infinite alternate;
+  }
+  #login .bg-water{
+    background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg');
+    animation:burns 35s ease-in-out infinite alternate;
+    -webkit-mask-image:linear-gradient(to bottom, transparent 50%, black 70%);
+            mask-image:linear-gradient(to bottom, transparent 50%, black 70%);
+    filter:url(#waterShimmer);
   }
   #login::after{
-    content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at center, transparent 20%, rgba(26,37,53,0.55) 80%);
+    content:"";position:absolute;inset:0;z-index:1;
+    background:radial-gradient(ellipse at center, transparent 30%, rgba(20,30,40,0.55) 90%);
   }
   @keyframes burns{
     0%{transform:scale(1) translate(0,0)}
-    100%{transform:scale(1.12) translate(-2%,-1%)}
+    100%{transform:scale(1.1) translate(-1.5%,-1%)}
   }
   .card{
-    position:relative;z-index:2;
-    background:var(--niebla);
-    backdrop-filter:blur(8px);
-    padding:3.5rem 3rem;border-radius:4px;
-    box-shadow:0 30px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,90,0.3);
-    text-align:center;max-width:420px;width:90%;
-    animation:floatIn 1.4s cubic-bezier(.2,.8,.2,1) both;
+    position:relative;z-index:3;
+    background:var(--niebla);backdrop-filter:blur(10px);
+    padding:3.5rem 3rem;border-radius:3px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.45),0 0 0 1px rgba(198,154,74,0.35),inset 0 0 60px rgba(245,236,217,0.4);
+    text-align:center;max-width:430px;width:90%;
+    animation:floatIn 1.6s cubic-bezier(.2,.8,.2,1) both;
   }
-  @keyframes floatIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes floatIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
   .card h1{
-    font-family:'Cormorant SC','Cormorant Garamond',serif;
-    font-weight:400;font-size:2.4rem;letter-spacing:.18em;
-    color:var(--agua-prof);margin-bottom:.4rem;
+    font-family:'Italianno',cursive;font-weight:400;font-size:4.2rem;
+    color:var(--agua-prof);margin-bottom:.2rem;line-height:.9;
+  }
+  .card .sigla{
+    font-family:'Cormorant SC',serif;font-size:.85rem;letter-spacing:.5em;
+    color:var(--dorado);padding-left:.5em;margin-bottom:.4rem;
   }
   .card .ornament{
-    color:var(--dorado);font-size:1.4rem;letter-spacing:1em;
-    margin:.3rem 0 1rem;padding-left:1em;
+    color:var(--dorado);font-size:1.1rem;letter-spacing:1.2em;
+    margin:.4rem 0 1.3rem;padding-left:1.2em;
   }
-  .card p.lead{
-    font-style:italic;font-size:1.1rem;color:var(--tinta);
-    opacity:.75;margin-bottom:2rem;line-height:1.4;
-  }
+  .card p.lead{font-style:italic;font-size:1.1rem;color:var(--tinta);opacity:.78;margin-bottom:2rem;line-height:1.5}
+  .card p.lead .sig{display:block;font-size:.85rem;letter-spacing:.18em;margin-top:.5rem;font-style:normal;opacity:.6}
   .field{position:relative;margin-bottom:1.2rem}
   .field input{
     width:100%;padding:.9rem 1rem;border:none;border-bottom:1px solid var(--agua-prof);
     background:transparent;font-family:inherit;font-size:1.15rem;
-    color:var(--tinta);text-align:center;letter-spacing:.15em;outline:none;
-    transition:border-color .3s;
+    color:var(--tinta);text-align:center;letter-spacing:.18em;outline:none;transition:border-color .4s;
   }
-  .field input::placeholder{color:#8a99ad;font-style:italic;letter-spacing:.05em}
+  .field input::placeholder{color:#7a8a8a;font-style:italic;letter-spacing:.05em}
   .field input:focus{border-color:var(--dorado)}
   .btn{
-    background:var(--agua-prof);color:var(--crema);
-    border:none;padding:.85rem 2.5rem;font-family:'Cormorant SC',serif;
-    font-size:1rem;letter-spacing:.25em;cursor:pointer;
-    transition:all .4s ease;border-radius:2px;
+    background:var(--agua-prof);color:var(--crema-claro);border:none;
+    padding:.85rem 2.5rem;font-family:'Cormorant SC',serif;font-size:1rem;
+    letter-spacing:.28em;cursor:pointer;transition:all .5s ease;border-radius:1px;
   }
-  .btn:hover{background:var(--dorado);color:var(--tinta);letter-spacing:.3em}
-  .err{color:#a04545;font-style:italic;font-size:.95rem;margin-top:1rem;min-height:1.2em}
-
-  /* ============ DASHBOARD ============ */
-  #app{
-    position:fixed;inset:0;display:none;flex-direction:column;
-    opacity:0;transition:opacity 1.2s ease;
-  }
+  .btn:hover{background:var(--dorado);color:var(--tinta);letter-spacing:.34em}
+  .err{color:#9a4040;font-style:italic;font-size:.95rem;margin-top:1rem;min-height:1.2em}
+  #app{position:fixed;inset:0;display:none;flex-direction:column;opacity:0;transition:opacity 1.4s ease}
   #app.show{display:flex;opacity:1}
-  .bg-stage{
-    position:absolute;inset:0;z-index:0;overflow:hidden;background:#1a2535;
-  }
-  .bg-stage .slide{
+  .bg-stage{position:absolute;inset:0;z-index:0;overflow:hidden;background:#1a2535}
+  .slide-pair{position:absolute;inset:0;opacity:0;transition:opacity 3s ease-in-out}
+  .slide-pair.active{opacity:1}
+  .slide-pair .layer{
     position:absolute;inset:0;background-size:cover;background-position:center;
-    opacity:0;transition:opacity 3s ease-in-out;
-    animation:burns 25s ease-in-out infinite alternate;
+    animation:burns 28s ease-in-out infinite alternate;
   }
-  .bg-stage .slide.active{opacity:1}
+  .slide-pair .layer.water{
+    -webkit-mask-image:linear-gradient(to bottom, transparent 42%, black 60%);
+            mask-image:linear-gradient(to bottom, transparent 42%, black 60%);
+    filter:url(#waterShimmer);
+  }
   .bg-stage::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(26,37,53,0.35) 0%, rgba(26,37,53,0.55) 100%);
+    background:linear-gradient(180deg, rgba(20,30,40,0.32) 0%, rgba(20,30,40,0.55) 100%);
     pointer-events:none;
   }
-
-  /* nenúfares flotando */
   .lilies{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
   .lily{
     position:absolute;border-radius:50%;
-    background:radial-gradient(circle at 35% 35%, var(--rosa), var(--lavanda) 60%, transparent 75%);
-    opacity:.55;filter:blur(1px);
-    animation:drift linear infinite;
+    background:radial-gradient(circle at 35% 35%, var(--rosa), var(--lavanda) 60%, transparent 78%);
+    opacity:.45;filter:blur(1.5px);animation:drift linear infinite;
   }
-  @keyframes drift{
-    0%{transform:translate(0,0) rotate(0)}
-    100%{transform:translate(120vw,-30vh) rotate(360deg)}
-  }
-
+  @keyframes drift{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(120vw,-30vh) rotate(360deg)}}
   header{
-    position:relative;z-index:3;padding:1.6rem 2.5rem;
+    position:relative;z-index:3;padding:1.5rem 2.5rem;
     display:flex;align-items:center;justify-content:space-between;
-    background:linear-gradient(180deg, rgba(245,236,217,0.92) 0%, rgba(245,236,217,0.7) 100%);
-    border-bottom:1px solid rgba(212,168,90,0.4);
-    backdrop-filter:blur(6px);
+    background:linear-gradient(180deg, rgba(251,246,232,0.94) 0%, rgba(251,246,232,0.72) 100%);
+    border-bottom:1px solid rgba(198,154,74,0.4);backdrop-filter:blur(8px);
   }
-  header h2{
-    font-family:'Cormorant SC',serif;font-weight:400;font-size:1.8rem;
-    color:var(--agua-prof);letter-spacing:.2em;
-  }
-  header .sub{font-style:italic;color:var(--tinta);opacity:.65;font-size:.95rem;margin-top:.1rem}
+  header .brand{display:flex;align-items:baseline;gap:.7rem}
+  header h2{font-family:'Italianno',cursive;font-weight:400;font-size:2.6rem;color:var(--agua-prof);line-height:1}
+  header .sub{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--tinta);opacity:.65;font-size:.95rem}
   .logout{
     background:transparent;border:1px solid var(--agua-prof);
-    color:var(--agua-prof);padding:.45rem 1.2rem;cursor:pointer;
-    font-family:'Cormorant SC',serif;letter-spacing:.2em;font-size:.85rem;
-    transition:all .3s;
+    color:var(--agua-prof);padding:.45rem 1.3rem;cursor:pointer;
+    font-family:'Cormorant SC',serif;letter-spacing:.22em;font-size:.8rem;transition:all .4s;
   }
-  .logout:hover{background:var(--agua-prof);color:var(--crema)}
-
-  main{
-    position:relative;z-index:3;flex:1;overflow-y:auto;padding:2rem 2.5rem 4rem;
-  }
+  .logout:hover{background:var(--agua-prof);color:var(--crema-claro)}
+  main{position:relative;z-index:3;flex:1;overflow-y:auto;padding:2rem 2.5rem 4rem}
   main::-webkit-scrollbar{width:8px}
   main::-webkit-scrollbar-track{background:rgba(245,236,217,0.2)}
   main::-webkit-scrollbar-thumb{background:var(--agua-prof);border-radius:4px}
-
-  .tabs{
-    display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem;
-    flex-wrap:wrap;
-  }
+  .tabs{display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap}
   .tab{
-    background:rgba(245,236,217,0.85);backdrop-filter:blur(6px);
-    border:1px solid rgba(61,107,138,0.3);
-    padding:.7rem 2rem;cursor:pointer;
-    font-family:'Cormorant SC',serif;font-size:1rem;letter-spacing:.2em;
-    color:var(--tinta);transition:all .4s;border-radius:2px;
+    background:rgba(251,246,232,0.85);backdrop-filter:blur(6px);
+    border:1px solid rgba(61,107,138,0.3);padding:.7rem 2rem;cursor:pointer;
+    font-family:'Cormorant SC',serif;font-size:1rem;letter-spacing:.22em;
+    color:var(--tinta);transition:all .4s;border-radius:1px;
   }
   .tab:hover{background:var(--niebla);transform:translateY(-2px)}
-  .tab.active{background:var(--agua-prof);color:var(--crema);box-shadow:0 6px 20px rgba(61,107,138,0.4)}
-
+  .tab.active{background:var(--agua-prof);color:var(--crema-claro);box-shadow:0 6px 22px rgba(61,107,138,0.45)}
   .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
   .toolbar .filter{
-    background:rgba(245,236,217,0.8);border:none;padding:.6rem 1rem;
-    font-family:inherit;font-size:1rem;color:var(--tinta);border-radius:2px;
-    border:1px solid rgba(61,107,138,0.2);min-width:200px;
+    background:rgba(251,246,232,0.85);border:none;padding:.6rem 1rem;
+    font-family:inherit;font-size:1rem;color:var(--tinta);border-radius:1px;
+    border:1px solid rgba(61,107,138,0.25);min-width:200px;
   }
   .add-btn{
-    background:var(--dorado);color:var(--tinta);border:none;
-    padding:.7rem 1.6rem;font-family:'Cormorant SC',serif;letter-spacing:.2em;
-    font-size:.95rem;cursor:pointer;border-radius:2px;
-    box-shadow:0 6px 20px rgba(212,168,90,0.4);transition:all .3s;
+    background:var(--dorado);color:var(--crema-claro);border:none;
+    padding:.7rem 1.6rem;font-family:'Cormorant SC',serif;letter-spacing:.22em;
+    font-size:.9rem;cursor:pointer;border-radius:1px;
+    box-shadow:0 6px 20px rgba(198,154,74,0.45);transition:all .4s;
   }
-  .add-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(212,168,90,0.5)}
-
-  .grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
-    gap:1.4rem;
-  }
+  .add-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(198,154,74,0.55)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.4rem}
   .item{
-    background:var(--niebla);backdrop-filter:blur(8px);
-    padding:1.5rem;border-radius:3px;
-    border:1px solid rgba(212,168,90,0.25);
-    box-shadow:0 14px 40px rgba(26,37,53,0.25);
-    transition:all .4s ease;position:relative;
-    animation:rise .6s ease both;
+    background:var(--niebla);backdrop-filter:blur(10px);
+    padding:1.5rem;border-radius:2px;border:1px solid rgba(198,154,74,0.28);
+    box-shadow:0 14px 40px rgba(20,30,40,0.28);
+    transition:all .5s ease;position:relative;animation:rise .7s ease both;
   }
   @keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-  .item:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(26,37,53,0.35)}
+  .item:hover{transform:translateY(-4px);box-shadow:0 22px 52px rgba(20,30,40,0.38)}
   .item.done{opacity:.78}
   .item .top{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;margin-bottom:.4rem}
-  .item h3{
-    font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.5rem;
-    color:var(--agua-prof);line-height:1.2;
-  }
-  .item .badge{
-    font-family:'Cormorant SC',serif;font-size:.7rem;letter-spacing:.18em;
-    padding:.25rem .6rem;border-radius:20px;white-space:nowrap;
-  }
+  .item h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.55rem;color:var(--agua-prof);line-height:1.2}
+  .item .badge{font-family:'Cormorant SC',serif;font-size:.7rem;letter-spacing:.2em;padding:.25rem .65rem;border-radius:20px;white-space:nowrap}
   .badge.pend{background:var(--rosa);color:#7a3a48}
   .badge.done{background:var(--salvia);color:#3a4a30}
   .item .place{font-style:italic;color:var(--tinta);opacity:.7;font-size:.95rem;margin-bottom:.6rem}
@@ -215,63 +192,53 @@
   .icon-btn{
     background:transparent;border:1px solid rgba(61,107,138,0.3);
     padding:.35rem .8rem;cursor:pointer;font-family:'Cormorant SC',serif;
-    letter-spacing:.15em;font-size:.75rem;color:var(--agua-prof);
-    transition:all .3s;border-radius:2px;
+    letter-spacing:.16em;font-size:.72rem;color:var(--agua-prof);transition:all .4s;border-radius:1px;
   }
-  .icon-btn:hover{background:var(--agua-prof);color:var(--crema)}
-  .icon-btn.del:hover{background:#a04545;border-color:#a04545;color:var(--crema)}
-
-  .empty{
-    text-align:center;padding:4rem 1rem;color:var(--crema);
-    font-style:italic;font-size:1.3rem;opacity:.85;
-    text-shadow:0 2px 8px rgba(0,0,0,0.4);
-  }
-
-  /* Modal */
-  .modal-bg{
-    position:fixed;inset:0;background:rgba(26,37,53,0.7);backdrop-filter:blur(4px);
-    z-index:50;display:none;align-items:center;justify-content:center;padding:1rem;
-  }
+  .icon-btn:hover{background:var(--agua-prof);color:var(--crema-claro)}
+  .icon-btn.del:hover{background:#9a4040;border-color:#9a4040;color:var(--crema-claro)}
+  .empty{text-align:center;padding:4rem 1rem;color:var(--crema-claro);font-family:'Italianno',cursive;font-size:2rem;opacity:.95;text-shadow:0 2px 12px rgba(0,0,0,0.5)}
+  .modal-bg{position:fixed;inset:0;background:rgba(20,30,40,0.7);backdrop-filter:blur(5px);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem}
   .modal-bg.show{display:flex;animation:fade .3s}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal{
-    background:var(--crema);padding:2.5rem;border-radius:4px;width:100%;max-width:500px;
-    box-shadow:0 30px 80px rgba(0,0,0,0.5);
-    animation:floatIn .5s cubic-bezier(.2,.8,.2,1);
-  }
-  .modal h3{
-    font-family:'Cormorant SC',serif;font-weight:400;font-size:1.6rem;
-    color:var(--agua-prof);letter-spacing:.2em;text-align:center;margin-bottom:1.5rem;
-  }
-  .modal label{
-    display:block;font-family:'Cormorant SC',serif;font-size:.8rem;
-    letter-spacing:.2em;color:var(--agua-prof);margin-bottom:.3rem;margin-top:.9rem;
-  }
-  .modal input,.modal textarea,.modal select{
-    width:100%;padding:.7rem .9rem;border:1px solid rgba(61,107,138,0.3);
-    font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--tinta);
-    background:white;border-radius:2px;outline:none;
-  }
+  .modal{background:var(--crema-claro);padding:2.5rem;border-radius:3px;width:100%;max-width:500px;box-shadow:0 30px 80px rgba(0,0,0,0.5);animation:floatIn .6s cubic-bezier(.2,.8,.2,1)}
+  .modal h3{font-family:'Italianno',cursive;font-weight:400;font-size:2.3rem;color:var(--agua-prof);text-align:center;margin-bottom:1.2rem}
+  .modal label{display:block;font-family:'Cormorant SC',serif;font-size:.78rem;letter-spacing:.22em;color:var(--agua-prof);margin-bottom:.3rem;margin-top:.9rem}
+  .modal input,.modal textarea,.modal select{width:100%;padding:.7rem .9rem;border:1px solid rgba(61,107,138,0.3);font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--tinta);background:white;border-radius:1px;outline:none}
   .modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--dorado)}
   .modal textarea{resize:vertical;min-height:75px;font-family:inherit}
   .modal .row{display:flex;gap:1rem;margin-top:1.6rem;justify-content:flex-end}
-
   @media (max-width:600px){
-    header{padding:1.2rem 1.2rem;flex-direction:column;gap:.8rem;text-align:center}
+    header{padding:1.2rem 1.2rem;flex-direction:column;gap:.6rem;text-align:center}
     main{padding:1.2rem 1rem 3rem}
     .card{padding:2.5rem 1.8rem}
-    .card h1{font-size:1.9rem}
+    .card h1{font-size:3.4rem}
   }
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <defs>
+    <filter id="waterShimmer" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.028" numOctaves="2" seed="3" result="noise">
+        <animate attributeName="baseFrequency" dur="22s"
+          values="0.014 0.028; 0.018 0.034; 0.014 0.028" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="canvas-grain"></div>
+
 <section id="login">
+  <div class="bg-static"></div>
+  <div class="bg-water"></div>
   <div class="card">
+    <div class="sigla">CLAUDE MONET</div>
     <h1>Giverny</h1>
-    <div class="ornament">· · ·</div>
-    <p class="lead">"Todo el mundo discute mi arte y finge entender,<br>como si fuera necesario entender,<br>cuando es simplemente necesario amar."</p>
+    <div class="ornament">&middot; &middot; &middot;</div>
+    <p class="lead">"No pinto la naturaleza, sino el aire que la rodea,<br>la luz, la atmósfera, lo intangible."<span class="sig">— C. M.</span></p>
     <form id="loginForm">
       <div class="field">
         <input type="password" id="pwd" placeholder="palabra clave" autocomplete="off" autofocus />
@@ -282,26 +249,22 @@
   </div>
 </section>
 
-<!-- ============ APP ============ -->
 <section id="app">
   <div class="bg-stage" id="bgStage"></div>
   <div class="lilies" id="lilies"></div>
-
   <header>
-    <div>
+    <div class="brand">
       <h2>Nuestro Atelier</h2>
-      <div class="sub">planes, lugares y mesas para compartir</div>
+      <span class="sub">— planes, lugares y mesas para compartir</span>
     </div>
     <button class="logout" id="logoutBtn">Salir</button>
   </header>
-
   <main>
     <div class="tabs">
       <button class="tab active" data-cat="restoran">Restoranes</button>
       <button class="tab" data-cat="lugar">Lugares</button>
       <button class="tab" data-cat="plan">Planes</button>
     </div>
-
     <div class="toolbar">
       <select class="filter" id="statusFilter">
         <option value="all">Todos los estados</option>
@@ -310,29 +273,27 @@
       </select>
       <button class="add-btn" id="addBtn">+ Agregar</button>
     </div>
-
     <div class="grid" id="grid"></div>
   </main>
 </section>
 
-<!-- ============ MODAL ============ -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
-    <h3 id="modalTitle">Nuevo</h3>
+    <h3 id="modalTitle">Nueva pincelada</h3>
     <form id="itemForm">
       <input type="hidden" id="itemId" />
       <label>Nombre</label>
       <input type="text" id="fName" required />
-      <label>Categoría</label>
+      <label>Categoria</label>
       <select id="fCat">
-        <option value="restoran">Restorán</option>
+        <option value="restoran">Restoran</option>
         <option value="lugar">Lugar</option>
         <option value="plan">Plan</option>
       </select>
-      <label>Lugar / Dirección</label>
-      <input type="text" id="fPlace" placeholder="Palermo, Buenos Aires…" />
+      <label>Lugar / Direccion</label>
+      <input type="text" id="fPlace" placeholder="Palermo, Buenos Aires..." />
       <label>Notas</label>
-      <textarea id="fNotes" placeholder="qué nos gustó, cuándo, con quién…"></textarea>
+      <textarea id="fNotes" placeholder="que nos gusto, cuando, con quien..."></textarea>
       <label>Estado</label>
       <select id="fStatus">
         <option value="pend">Pendiente</option>
@@ -347,7 +308,6 @@
 </div>
 
 <script>
-/* ====== LOGIN ====== */
 const loginEl = document.getElementById('login');
 const appEl   = document.getElementById('app');
 const errEl   = document.getElementById('err');
@@ -355,89 +315,84 @@ const errEl   = document.getElementById('err');
 document.getElementById('loginForm').addEventListener('submit', e => {
   e.preventDefault();
   const v = document.getElementById('pwd').value.trim().toLowerCase();
-  if (v === 'fortuna') {
-    sessionStorage.setItem('giverny_in','1');
-    enter();
-  } else {
-    errEl.textContent = 'La palabra no abre esta puerta…';
+  if (v === 'fortuna') { sessionStorage.setItem('giverny_in','1'); enter(); }
+  else {
+    errEl.textContent = 'La palabra no abre esta puerta...';
     document.getElementById('pwd').value='';
     setTimeout(()=>errEl.textContent='', 2800);
   }
 });
-
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
-  sessionStorage.removeItem('giverny_in');
-  location.reload();
-});
+document.getElementById('logoutBtn').addEventListener('click', ()=>{ sessionStorage.removeItem('giverny_in'); location.reload(); });
 
 function enter(){
   loginEl.classList.add('gone');
   setTimeout(()=>{
     loginEl.style.display='none';
     appEl.classList.add('show');
-    initBg();
-    initLilies();
-    render();
-  }, 1100);
+    initBg(); initLilies(); render();
+  }, 1300);
 }
 if (sessionStorage.getItem('giverny_in')==='1') enter();
 
-/* ====== FONDOS DINÁMICOS DE MONET ====== */
 const paintings = [
   'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1600px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_Google_Art_Project.jpg/1280px-Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_Google_Art_Project.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Claude_Monet_-_Le_Bassin_Aux_Nymph%C3%A9as_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_Le_Bassin_Aux_Nymph%C3%A9as_-_Google_Art_Project.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg/1600px-Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Claude_Monet_-_Meule_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_Meule_-_Google_Art_Project.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Claude_Monet_-_Wheatstacks_%28End_of_Summer%29%2C_1890-91_%28190_Kb%29%3B_Oil_on_canvas%2C_60_x_100_cm_%2823_5-8_x_39_3-8_in%29%2C_The_Art_Institute_of_Chicago.jpg/1600px-thumbnail.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg/1600px-Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg'
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1600px-Monet_-_Impression%2C_Sunrise.jpg'
 ];
 let bgIdx = 0;
 function initBg(){
   const stage = document.getElementById('bgStage');
   paintings.forEach((url,i)=>{
-    const s = document.createElement('div');
-    s.className = 'slide' + (i===0?' active':'');
-    s.style.backgroundImage = `url('${url}')`;
-    s.style.animationDelay = (i*-3)+'s';
-    stage.appendChild(s);
+    const pair = document.createElement('div');
+    pair.className = 'slide-pair' + (i===0?' active':'');
+    const back = document.createElement('div');
+    back.className = 'layer';
+    back.style.backgroundImage = "url('" + url + "')";
+    back.style.animationDelay = (i*-3)+'s';
+    const water = document.createElement('div');
+    water.className = 'layer water';
+    water.style.backgroundImage = "url('" + url + "')";
+    water.style.animationDelay = (i*-3)+'s';
+    pair.appendChild(back); pair.appendChild(water);
+    stage.appendChild(pair);
   });
   setInterval(()=>{
-    const slides = stage.querySelectorAll('.slide');
-    slides[bgIdx].classList.remove('active');
-    bgIdx = (bgIdx+1) % slides.length;
-    slides[bgIdx].classList.add('active');
+    const pairs = stage.querySelectorAll('.slide-pair');
+    pairs[bgIdx].classList.remove('active');
+    bgIdx = (bgIdx+1) % pairs.length;
+    pairs[bgIdx].classList.add('active');
   }, 9000);
 }
 
-/* ====== NENÚFARES ====== */
 function initLilies(){
   const c = document.getElementById('lilies');
   for (let i=0;i<14;i++){
-    const l = document.createElement('div');
-    l.className='lily';
+    const l = document.createElement('div'); l.className='lily';
     const size = 20 + Math.random()*60;
-    l.style.width = size+'px';
-    l.style.height = size+'px';
+    l.style.width = size+'px'; l.style.height = size+'px';
     l.style.left = (-10 + Math.random()*30)+'%';
     l.style.top  = (60 + Math.random()*60)+'%';
     l.style.animationDuration = (40 + Math.random()*60)+'s';
     l.style.animationDelay = (-Math.random()*60)+'s';
-    l.style.opacity = .25 + Math.random()*.4;
+    l.style.opacity = .25 + Math.random()*.35;
     c.appendChild(l);
   }
 }
 
-/* ====== DATOS ====== */
-const KEY = 'giverny_items_v1';
+const KEY = 'giverny_items_v2';
 let items = JSON.parse(localStorage.getItem(KEY) || 'null') || [
-  { id:uid(), name:'Don Julio', cat:'restoran', place:'Palermo, BA', notes:'Parrilla clásica, anotada hace meses.', status:'pend', hearts:4 },
+  { id:uid(), name:'Don Julio', cat:'restoran', place:'Palermo, BA', notes:'Parrilla clasica, anotada hace meses.', status:'pend', hearts:0 },
+  { id:uid(), name:'Showcase', cat:'restoran', place:'Buenos Aires', notes:'Para una noche especial.', status:'pend', hearts:0 },
+  { id:uid(), name:'Kalis', cat:'restoran', place:'Buenos Aires', notes:'Probar la cocina.', status:'pend', hearts:0 },
+  { id:uid(), name:'Museo Malba', cat:'lugar', place:'Av. Figueroa Alcorta 3415, CABA', notes:'Coleccion de arte latinoamericano + cafe.', status:'pend', hearts:0 },
   { id:uid(), name:'Bosques de Palermo al atardecer', cat:'lugar', place:'CABA', notes:'Caminata + mate.', status:'pend', hearts:3 },
-  { id:uid(), name:'Maratón de películas francesas', cat:'plan', place:'En casa', notes:'Amélie, Le Fabuleux Destin, La Vie en Rose.', status:'done', hearts:5 }
+  { id:uid(), name:'Maraton de peliculas francesas', cat:'plan', place:'En casa', notes:'Amelie, Le Fabuleux Destin, La Vie en Rose.', status:'done', hearts:5 }
 ];
 function uid(){ return Math.random().toString(36).slice(2,9) }
 function save(){ localStorage.setItem(KEY, JSON.stringify(items)) }
 
-/* ====== RENDER ====== */
 let currentCat = 'restoran';
 let currentStatus = 'all';
 
@@ -449,16 +404,13 @@ document.querySelectorAll('.tab').forEach(t=>{
     render();
   });
 });
-document.getElementById('statusFilter').addEventListener('change', e=>{
-  currentStatus = e.target.value;
-  render();
-});
+document.getElementById('statusFilter').addEventListener('change', e=>{ currentStatus = e.target.value; render(); });
 
 function render(){
   const grid = document.getElementById('grid');
   const list = items.filter(i=>i.cat===currentCat).filter(i=>currentStatus==='all'||i.status===currentStatus);
   if (!list.length){
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Como un lienzo en blanco esperando la primera pincelada…</div>';
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">un lienzo en blanco esperando la primera pincelada...</div>';
     return;
   }
   grid.innerHTML = list.map(i=>`
@@ -470,10 +422,10 @@ function render(){
       ${i.place?`<div class="place">${esc(i.place)}</div>`:''}
       ${i.notes?`<div class="notes">${esc(i.notes)}</div>`:''}
       <div class="hearts" data-id="${i.id}">
-        ${[1,2,3,4,5].map(n=>`<span class="${n<=i.hearts?'on':''}" data-n="${n}">♥</span>`).join('')}
+        ${[1,2,3,4,5].map(n=>`<span class="${n<=i.hearts?'on':''}" data-n="${n}">&hearts;</span>`).join('')}
       </div>
       <div class="actions">
-        <button class="icon-btn" onclick="toggleStatus('${i.id}')">${i.status==='done'?'↺ Pendiente':'✓ Visitado'}</button>
+        <button class="icon-btn" onclick="toggleStatus('${i.id}')">${i.status==='done'?'Pendiente':'Visitado'}</button>
         <button class="icon-btn" onclick="edit('${i.id}')">Editar</button>
         <button class="icon-btn del" onclick="del('${i.id}')">Borrar</button>
       </div>
@@ -499,20 +451,19 @@ window.toggleStatus = id => {
   save(); render();
 };
 window.del = id => {
-  if (!confirm('¿Borrar esta pincelada?')) return;
+  if (!confirm('Borrar esta pincelada?')) return;
   items = items.filter(x=>x.id!==id);
   save(); render();
 };
 window.edit = id => openModal(items.find(x=>x.id===id));
 
-/* ====== MODAL ====== */
 const modalBg = document.getElementById('modalBg');
 document.getElementById('addBtn').addEventListener('click', ()=>openModal());
 document.getElementById('cancelBtn').addEventListener('click', closeModal);
 modalBg.addEventListener('click', e=>{ if(e.target===modalBg) closeModal() });
 
 function openModal(it){
-  document.getElementById('modalTitle').textContent = it ? 'Editar' : 'Nueva pincelada';
+  document.getElementById('modalTitle').textContent = it ? 'Editar pincelada' : 'Nueva pincelada';
   document.getElementById('itemId').value = it?.id || '';
   document.getElementById('fName').value = it?.name || '';
   document.getElementById('fCat').value  = it?.cat  || currentCat;
@@ -533,16 +484,10 @@ document.getElementById('itemForm').addEventListener('submit', e=>{
     notes: document.getElementById('fNotes').value.trim(),
     status:document.getElementById('fStatus').value
   };
-  if (id){
-    Object.assign(items.find(x=>x.id===id), data);
-  } else {
-    items.unshift({ id:uid(), hearts:0, ...data });
-  }
+  if (id){ Object.assign(items.find(x=>x.id===id), data); }
+  else { items.unshift({ id:uid(), hearts:0, ...data }); }
   save(); closeModal();
-  // saltar al tab de la categoría que acaba de crear
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.classList.toggle('active', t.dataset.cat===data.cat);
-  });
+  document.querySelectorAll('.tab').forEach(t=>{ t.classList.toggle('active', t.dataset.cat===data.cat); });
   currentCat = data.cat;
   render();
 });
