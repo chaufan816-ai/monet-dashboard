@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Giverny — Nuestro Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --agua:#7fa7c9;
+    --agua-prof:#3d6b8a;
+    --lavanda:#b8a8d4;
+    --salvia:#a8b89a;
+    --crema:#f5ecd9;
+    --rosa:#e8b8c4;
+    --dorado:#d4a85a;
+    --tinta:#2a3f5a;
+    --niebla:rgba(245,236,217,0.85);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:'Cormorant Garamond',Georgia,serif;
+    color:var(--tinta);
+    background:#1a2535;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ LOGIN ============ */
+  #login{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:#1a2535;z-index:100;transition:opacity 1.2s ease;
+  }
+  #login.gone{opacity:0;pointer-events:none}
+  #login::before{
+    content:"";position:absolute;inset:0;
+    background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1600px-Monet_-_Impression%2C_Sunrise.jpg');
+    background-size:cover;background-position:center;
+    filter:saturate(1.05) brightness(0.92);
+    animation:burns 30s ease-in-out infinite alternate;
+  }
+  #login::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse at center, transparent 20%, rgba(26,37,53,0.55) 80%);
+  }
+  @keyframes burns{
+    0%{transform:scale(1) translate(0,0)}
+    100%{transform:scale(1.12) translate(-2%,-1%)}
+  }
+  .card{
+    position:relative;z-index:2;
+    background:var(--niebla);
+    backdrop-filter:blur(8px);
+    padding:3.5rem 3rem;border-radius:4px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,90,0.3);
+    text-align:center;max-width:420px;width:90%;
+    animation:floatIn 1.4s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes floatIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .card h1{
+    font-family:'Cormorant SC','Cormorant Garamond',serif;
+    font-weight:400;font-size:2.4rem;letter-spacing:.18em;
+    color:var(--agua-prof);margin-bottom:.4rem;
+  }
+  .card .ornament{
+    color:var(--dorado);font-size:1.4rem;letter-spacing:1em;
+    margin:.3rem 0 1rem;padding-left:1em;
+  }
+  .card p.lead{
+    font-style:italic;font-size:1.1rem;color:var(--tinta);
+    opacity:.75;margin-bottom:2rem;line-height:1.4;
+  }
+  .field{position:relative;margin-bottom:1.2rem}
+  .field input{
+    width:100%;padding:.9rem 1rem;border:none;border-bottom:1px solid var(--agua-prof);
+    background:transparent;font-family:inherit;font-size:1.15rem;
+    color:var(--tinta);text-align:center;letter-spacing:.15em;outline:none;
+    transition:border-color .3s;
+  }
+  .field input::placeholder{color:#8a99ad;font-style:italic;letter-spacing:.05em}
+  .field input:focus{border-color:var(--dorado)}
+  .btn{
+    background:var(--agua-prof);color:var(--crema);
+    border:none;padding:.85rem 2.5rem;font-family:'Cormorant SC',serif;
+    font-size:1rem;letter-spacing:.25em;cursor:pointer;
+    transition:all .4s ease;border-radius:2px;
+  }
+  .btn:hover{background:var(--dorado);color:var(--tinta);letter-spacing:.3em}
+  .err{color:#a04545;font-style:italic;font-size:.95rem;margin-top:1rem;min-height:1.2em}
+
+  /* ============ DASHBOARD ============ */
+  #app{
+    position:fixed;inset:0;display:none;flex-direction:column;
+    opacity:0;transition:opacity 1.2s ease;
+  }
+  #app.show{display:flex;opacity:1}
+  .bg-stage{
+    position:absolute;inset:0;z-index:0;overflow:hidden;background:#1a2535;
+  }
+  .bg-stage .slide{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity 3s ease-in-out;
+    animation:burns 25s ease-in-out infinite alternate;
+  }
+  .bg-stage .slide.active{opacity:1}
+  .bg-stage::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(26,37,53,0.35) 0%, rgba(26,37,53,0.55) 100%);
+    pointer-events:none;
+  }
+
+  /* nenúfares flotando */
+  .lilies{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .lily{
+    position:absolute;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--rosa), var(--lavanda) 60%, transparent 75%);
+    opacity:.55;filter:blur(1px);
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{transform:translate(0,0) rotate(0)}
+    100%{transform:translate(120vw,-30vh) rotate(360deg)}
+  }
+
+  header{
+    position:relative;z-index:3;padding:1.6rem 2.5rem;
+    display:flex;align-items:center;justify-content:space-between;
+    background:linear-gradient(180deg, rgba(245,236,217,0.92) 0%, rgba(245,236,217,0.7) 100%);
+    border-bottom:1px solid rgba(212,168,90,0.4);
+    backdrop-filter:blur(6px);
+  }
+  header h2{
+    font-family:'Cormorant SC',serif;font-weight:400;font-size:1.8rem;
+    color:var(--agua-prof);letter-spacing:.2em;
+  }
+  header .sub{font-style:italic;color:var(--tinta);opacity:.65;font-size:.95rem;margin-top:.1rem}
+  .logout{
+    background:transparent;border:1px solid var(--agua-prof);
+    color:var(--agua-prof);padding:.45rem 1.2rem;cursor:pointer;
+    font-family:'Cormorant SC',serif;letter-spacing:.2em;font-size:.85rem;
+    transition:all .3s;
+  }
+  .logout:hover{background:var(--agua-prof);color:var(--crema)}
+
+  main{
+    position:relative;z-index:3;flex:1;overflow-y:auto;padding:2rem 2.5rem 4rem;
+  }
+  main::-webkit-scrollbar{width:8px}
+  main::-webkit-scrollbar-track{background:rgba(245,236,217,0.2)}
+  main::-webkit-scrollbar-thumb{background:var(--agua-prof);border-radius:4px}
+
+  .tabs{
+    display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem;
+    flex-wrap:wrap;
+  }
+  .tab{
+    background:rgba(245,236,217,0.85);backdrop-filter:blur(6px);
+    border:1px solid rgba(61,107,138,0.3);
+    padding:.7rem 2rem;cursor:pointer;
+    font-family:'Cormorant SC',serif;font-size:1rem;letter-spacing:.2em;
+    color:var(--tinta);transition:all .4s;border-radius:2px;
+  }
+  .tab:hover{background:var(--niebla);transform:translateY(-2px)}
+  .tab.active{background:var(--agua-prof);color:var(--crema);box-shadow:0 6px 20px rgba(61,107,138,0.4)}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+  .toolbar .filter{
+    background:rgba(245,236,217,0.8);border:none;padding:.6rem 1rem;
+    font-family:inherit;font-size:1rem;color:var(--tinta);border-radius:2px;
+    border:1px solid rgba(61,107,138,0.2);min-width:200px;
+  }
+  .add-btn{
+    background:var(--dorado);color:var(--tinta);border:none;
+    padding:.7rem 1.6rem;font-family:'Cormorant SC',serif;letter-spacing:.2em;
+    font-size:.95rem;cursor:pointer;border-radius:2px;
+    box-shadow:0 6px 20px rgba(212,168,90,0.4);transition:all .3s;
+  }
+  .add-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(212,168,90,0.5)}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+    gap:1.4rem;
+  }
+  .item{
+    background:var(--niebla);backdrop-filter:blur(8px);
+    padding:1.5rem;border-radius:3px;
+    border:1px solid rgba(212,168,90,0.25);
+    box-shadow:0 14px 40px rgba(26,37,53,0.25);
+    transition:all .4s ease;position:relative;
+    animation:rise .6s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+  .item:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(26,37,53,0.35)}
+  .item.done{opacity:.78}
+  .item .top{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;margin-bottom:.4rem}
+  .item h3{
+    font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.5rem;
+    color:var(--agua-prof);line-height:1.2;
+  }
+  .item .badge{
+    font-family:'Cormorant SC',serif;font-size:.7rem;letter-spacing:.18em;
+    padding:.25rem .6rem;border-radius:20px;white-space:nowrap;
+  }
+  .badge.pend{background:var(--rosa);color:#7a3a48}
+  .badge.done{background:var(--salvia);color:#3a4a30}
+  .item .place{font-style:italic;color:var(--tinta);opacity:.7;font-size:.95rem;margin-bottom:.6rem}
+  .item .notes{color:var(--tinta);font-size:1rem;line-height:1.45;margin-bottom:.8rem;opacity:.85}
+  .hearts{font-size:1.1rem;letter-spacing:.1em;margin-bottom:.8rem;color:#ccc}
+  .hearts span{cursor:pointer;transition:transform .2s}
+  .hearts span:hover{transform:scale(1.2)}
+  .hearts span.on{color:#c66}
+  .actions{display:flex;gap:.5rem;justify-content:flex-end;border-top:1px solid rgba(61,107,138,0.15);padding-top:.7rem}
+  .icon-btn{
+    background:transparent;border:1px solid rgba(61,107,138,0.3);
+    padding:.35rem .8rem;cursor:pointer;font-family:'Cormorant SC',serif;
+    letter-spacing:.15em;font-size:.75rem;color:var(--agua-prof);
+    transition:all .3s;border-radius:2px;
+  }
+  .icon-btn:hover{background:var(--agua-prof);color:var(--crema)}
+  .icon-btn.del:hover{background:#a04545;border-color:#a04545;color:var(--crema)}
+
+  .empty{
+    text-align:center;padding:4rem 1rem;color:var(--crema);
+    font-style:italic;font-size:1.3rem;opacity:.85;
+    text-shadow:0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* Modal */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(26,37,53,0.7);backdrop-filter:blur(4px);
+    z-index:50;display:none;align-items:center;justify-content:center;padding:1rem;
+  }
+  .modal-bg.show{display:flex;animation:fade .3s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:var(--crema);padding:2.5rem;border-radius:4px;width:100%;max-width:500px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.5);
+    animation:floatIn .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .modal h3{
+    font-family:'Cormorant SC',serif;font-weight:400;font-size:1.6rem;
+    color:var(--agua-prof);letter-spacing:.2em;text-align:center;margin-bottom:1.5rem;
+  }
+  .modal label{
+    display:block;font-family:'Cormorant SC',serif;font-size:.8rem;
+    letter-spacing:.2em;color:var(--agua-prof);margin-bottom:.3rem;margin-top:.9rem;
+  }
+  .modal input,.modal textarea,.modal select{
+    width:100%;padding:.7rem .9rem;border:1px solid rgba(61,107,138,0.3);
+    font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--tinta);
+    background:white;border-radius:2px;outline:none;
+  }
+  .modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--dorado)}
+  .modal textarea{resize:vertical;min-height:75px;font-family:inherit}
+  .modal .row{display:flex;gap:1rem;margin-top:1.6rem;justify-content:flex-end}
+
+  @media (max-width:600px){
+    header{padding:1.2rem 1.2rem;flex-direction:column;gap:.8rem;text-align:center}
+    main{padding:1.2rem 1rem 3rem}
+    .card{padding:2.5rem 1.8rem}
+    .card h1{font-size:1.9rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="card">
+    <h1>Giverny</h1>
+    <div class="ornament">· · ·</div>
+    <p class="lead">"Todo el mundo discute mi arte y finge entender,<br>como si fuera necesario entender,<br>cuando es simplemente necesario amar."</p>
+    <form id="loginForm">
+      <div class="field">
+        <input type="password" id="pwd" placeholder="palabra clave" autocomplete="off" autofocus />
+      </div>
+      <button type="submit" class="btn">Ingresar</button>
+      <div class="err" id="err"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="app">
+  <div class="bg-stage" id="bgStage"></div>
+  <div class="lilies" id="lilies"></div>
+
+  <header>
+    <div>
+      <h2>Nuestro Atelier</h2>
+      <div class="sub">planes, lugares y mesas para compartir</div>
+    </div>
+    <button class="logout" id="logoutBtn">Salir</button>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button class="tab active" data-cat="restoran">Restoranes</button>
+      <button class="tab" data-cat="lugar">Lugares</button>
+      <button class="tab" data-cat="plan">Planes</button>
+    </div>
+
+    <div class="toolbar">
+      <select class="filter" id="statusFilter">
+        <option value="all">Todos los estados</option>
+        <option value="pend">Pendientes</option>
+        <option value="done">Visitados / hechos</option>
+      </select>
+      <button class="add-btn" id="addBtn">+ Agregar</button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </main>
+</section>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3 id="modalTitle">Nuevo</h3>
+    <form id="itemForm">
+      <input type="hidden" id="itemId" />
+      <label>Nombre</label>
+      <input type="text" id="fName" required />
+      <label>Categoría</label>
+      <select id="fCat">
+        <option value="restoran">Restorán</option>
+        <option value="lugar">Lugar</option>
+        <option value="plan">Plan</option>
+      </select>
+      <label>Lugar / Dirección</label>
+      <input type="text" id="fPlace" placeholder="Palermo, Buenos Aires…" />
+      <label>Notas</label>
+      <textarea id="fNotes" placeholder="qué nos gustó, cuándo, con quién…"></textarea>
+      <label>Estado</label>
+      <select id="fStatus">
+        <option value="pend">Pendiente</option>
+        <option value="done">Visitado / hecho</option>
+      </select>
+      <div class="row">
+        <button type="button" class="icon-btn" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="btn">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ====== LOGIN ====== */
+const loginEl = document.getElementById('login');
+const appEl   = document.getElementById('app');
+const errEl   = document.getElementById('err');
+
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = document.getElementById('pwd').value.trim().toLowerCase();
+  if (v === 'fortuna') {
+    sessionStorage.setItem('giverny_in','1');
+    enter();
+  } else {
+    errEl.textContent = 'La palabra no abre esta puerta…';
+    document.getElementById('pwd').value='';
+    setTimeout(()=>errEl.textContent='', 2800);
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  sessionStorage.removeItem('giverny_in');
+  location.reload();
+});
+
+function enter(){
+  loginEl.classList.add('gone');
+  setTimeout(()=>{
+    loginEl.style.display='none';
+    appEl.classList.add('show');
+    initBg();
+    initLilies();
+    render();
+  }, 1100);
+}
+if (sessionStorage.getItem('giverny_in')==='1') enter();
+
+/* ====== FONDOS DINÁMICOS DE MONET ====== */
+const paintings = [
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1600px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_The_Water_Lily_Pond_-_Google_Art_Project.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_Google_Art_Project.jpg/1280px-Claude_Monet_-_Woman_with_a_Parasol_-_Madame_Monet_and_Her_Son_-_Google_Art_Project.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Claude_Monet_-_Meule_-_Google_Art_Project.jpg/1600px-Claude_Monet_-_Meule_-_Google_Art_Project.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Claude_Monet_-_Wheatstacks_%28End_of_Summer%29%2C_1890-91_%28190_Kb%29%3B_Oil_on_canvas%2C_60_x_100_cm_%2823_5-8_x_39_3-8_in%29%2C_The_Art_Institute_of_Chicago.jpg/1600px-thumbnail.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg/1600px-Claude_Monet_The_Cliff_Walk_at_Pourville_1882.jpg'
+];
+let bgIdx = 0;
+function initBg(){
+  const stage = document.getElementById('bgStage');
+  paintings.forEach((url,i)=>{
+    const s = document.createElement('div');
+    s.className = 'slide' + (i===0?' active':'');
+    s.style.backgroundImage = `url('${url}')`;
+    s.style.animationDelay = (i*-3)+'s';
+    stage.appendChild(s);
+  });
+  setInterval(()=>{
+    const slides = stage.querySelectorAll('.slide');
+    slides[bgIdx].classList.remove('active');
+    bgIdx = (bgIdx+1) % slides.length;
+    slides[bgIdx].classList.add('active');
+  }, 9000);
+}
+
+/* ====== NENÚFARES ====== */
+function initLilies(){
+  const c = document.getElementById('lilies');
+  for (let i=0;i<14;i++){
+    const l = document.createElement('div');
+    l.className='lily';
+    const size = 20 + Math.random()*60;
+    l.style.width = size+'px';
+    l.style.height = size+'px';
+    l.style.left = (-10 + Math.random()*30)+'%';
+    l.style.top  = (60 + Math.random()*60)+'%';
+    l.style.animationDuration = (40 + Math.random()*60)+'s';
+    l.style.animationDelay = (-Math.random()*60)+'s';
+    l.style.opacity = .25 + Math.random()*.4;
+    c.appendChild(l);
+  }
+}
+
+/* ====== DATOS ====== */
+const KEY = 'giverny_items_v1';
+let items = JSON.parse(localStorage.getItem(KEY) || 'null') || [
+  { id:uid(), name:'Don Julio', cat:'restoran', place:'Palermo, BA', notes:'Parrilla clásica, anotada hace meses.', status:'pend', hearts:4 },
+  { id:uid(), name:'Bosques de Palermo al atardecer', cat:'lugar', place:'CABA', notes:'Caminata + mate.', status:'pend', hearts:3 },
+  { id:uid(), name:'Maratón de películas francesas', cat:'plan', place:'En casa', notes:'Amélie, Le Fabuleux Destin, La Vie en Rose.', status:'done', hearts:5 }
+];
+function uid(){ return Math.random().toString(36).slice(2,9) }
+function save(){ localStorage.setItem(KEY, JSON.stringify(items)) }
+
+/* ====== RENDER ====== */
+let currentCat = 'restoran';
+let currentStatus = 'all';
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentCat = t.dataset.cat;
+    render();
+  });
+});
+document.getElementById('statusFilter').addEventListener('change', e=>{
+  currentStatus = e.target.value;
+  render();
+});
+
+function render(){
+  const grid = document.getElementById('grid');
+  const list = items.filter(i=>i.cat===currentCat).filter(i=>currentStatus==='all'||i.status===currentStatus);
+  if (!list.length){
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Como un lienzo en blanco esperando la primera pincelada…</div>';
+    return;
+  }
+  grid.innerHTML = list.map(i=>`
+    <div class="item ${i.status==='done'?'done':''}">
+      <div class="top">
+        <h3>${esc(i.name)}</h3>
+        <span class="badge ${i.status==='done'?'done':'pend'}">${i.status==='done'?'visitado':'pendiente'}</span>
+      </div>
+      ${i.place?`<div class="place">${esc(i.place)}</div>`:''}
+      ${i.notes?`<div class="notes">${esc(i.notes)}</div>`:''}
+      <div class="hearts" data-id="${i.id}">
+        ${[1,2,3,4,5].map(n=>`<span class="${n<=i.hearts?'on':''}" data-n="${n}">♥</span>`).join('')}
+      </div>
+      <div class="actions">
+        <button class="icon-btn" onclick="toggleStatus('${i.id}')">${i.status==='done'?'↺ Pendiente':'✓ Visitado'}</button>
+        <button class="icon-btn" onclick="edit('${i.id}')">Editar</button>
+        <button class="icon-btn del" onclick="del('${i.id}')">Borrar</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.hearts').forEach(h=>{
+    h.querySelectorAll('span').forEach(s=>{
+      s.addEventListener('click', ()=>{
+        const id = h.dataset.id, n = +s.dataset.n;
+        const it = items.find(x=>x.id===id);
+        it.hearts = it.hearts===n ? n-1 : n;
+        save(); render();
+      });
+    });
+  });
+}
+function esc(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+
+window.toggleStatus = id => {
+  const it = items.find(x=>x.id===id);
+  it.status = it.status==='done' ? 'pend' : 'done';
+  save(); render();
+};
+window.del = id => {
+  if (!confirm('¿Borrar esta pincelada?')) return;
+  items = items.filter(x=>x.id!==id);
+  save(); render();
+};
+window.edit = id => openModal(items.find(x=>x.id===id));
+
+/* ====== MODAL ====== */
+const modalBg = document.getElementById('modalBg');
+document.getElementById('addBtn').addEventListener('click', ()=>openModal());
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+modalBg.addEventListener('click', e=>{ if(e.target===modalBg) closeModal() });
+
+function openModal(it){
+  document.getElementById('modalTitle').textContent = it ? 'Editar' : 'Nueva pincelada';
+  document.getElementById('itemId').value = it?.id || '';
+  document.getElementById('fName').value = it?.name || '';
+  document.getElementById('fCat').value  = it?.cat  || currentCat;
+  document.getElementById('fPlace').value= it?.place|| '';
+  document.getElementById('fNotes').value= it?.notes|| '';
+  document.getElementById('fStatus').value= it?.status || 'pend';
+  modalBg.classList.add('show');
+}
+function closeModal(){ modalBg.classList.remove('show') }
+
+document.getElementById('itemForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const id = document.getElementById('itemId').value;
+  const data = {
+    name:  document.getElementById('fName').value.trim(),
+    cat:   document.getElementById('fCat').value,
+    place: document.getElementById('fPlace').value.trim(),
+    notes: document.getElementById('fNotes').value.trim(),
+    status:document.getElementById('fStatus').value
+  };
+  if (id){
+    Object.assign(items.find(x=>x.id===id), data);
+  } else {
+    items.unshift({ id:uid(), hearts:0, ...data });
+  }
+  save(); closeModal();
+  // saltar al tab de la categoría que acaba de crear
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.cat===data.cat);
+  });
+  currentCat = data.cat;
+  render();
+});
+</script>
+</body>
+</html>
